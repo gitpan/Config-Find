@@ -1,5 +1,9 @@
 Revision history for Perl extension Config::Find.
 
+0.10  12 Jun 2003
+	- corrected several bugs in Windows modules
+	- new test script 2_where.t
+
 0.09  5 Jun 2003
 	- new file layout, now all the .pm files are under a common
 	  lib dir.

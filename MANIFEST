@@ -15,3 +15,5 @@ Makefile.PL
 MANIFEST
 README
 t/1.t
+t/2_where.t
+

@@ -1,6 +1,6 @@
 package Config::Find::WinAny;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use strict;
 use warnings;
@@ -14,11 +14,11 @@ our @ISA = qw(Config::Find::Any);
 sub app_dir {
     my ($class, $name)=@_;
 
-    my $name=$class->guess_script_name
+    $name=$class->guess_script_name
 	unless defined $name;
 
-    if (exists $ENV{$script.'_HOME'}) {
-	return $ENV{$script.'_HOME'}
+    if (exists $ENV{$name.'_HOME'}) {
+	return $ENV{$name.'_HOME'}
     }
     $class->guess_script_dir;
 }
@@ -57,7 +57,12 @@ sub _var_dir {
 
 sub _bin_dir {
     my ($class, $name, $more_name, $scope)=@_;
-    $class->app_dir($name);
+    if ($scope eq 'app') {
+	$class->app_dir($name);
+    }
+    else {
+	die "unimplemented option scope => $scope";
+    }
 }
 
 sub look_for_file {
