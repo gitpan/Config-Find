@@ -2,7 +2,7 @@ package Config::Find::Any;
 
 use 5.006;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use strict;
 use warnings;
@@ -35,6 +35,7 @@ sub _find {
 	}
 	return $fn if defined $fn;
     }
+    return undef;
 }
 
 sub open {
@@ -50,7 +51,7 @@ sub _open {
 	$class->create_parent_dirs($fn);
 	return IO::File->new($fn, 'w');
     }
-    return IO::File->new($fn, 'r');
+    defined($fn) ? IO::File->new($fn, 'r') : undef;
 }
 
 sub install {
