@@ -59,16 +59,16 @@ sub _temp_dir {
     my $stemp=$class->system_temp;
 
     if ($scope eq 'global') {
-	$class->my_catfile($stemp, $name, $more_name)
+	$class->my_catdir($stemp, $name, $more_name)
     }
     elsif ($scope eq 'user') {
-	$class->my_catfile($stemp, $class->my_getlogin, $name, $more_name)
+	$class->my_catdir($stemp, $class->my_getlogin, $name, $more_name)
     }
     elsif ($scope eq 'app') {
-	$class->my_catfile($class->app_dir($name), 'tmp', $more_name)
+	$class->my_catdir($class->app_dir($name), 'tmp', $more_name)
     }
     elsif ($scope eq 'process') {
-	$class->my_catfile($stemp, $class->my_getlogin, $name, $$, $more_name)
+	$class->my_catdir($stemp, $class->my_getlogin, $name, $$, $more_name)
     }
     else {
 	croak "scope '$scope' is not valid for temp_dir method";
@@ -84,7 +84,7 @@ sub guess_full_script_name {
     }
     return File::Spec->rel2abs($0) if -e $0;
 
-    die "unable to determine script '$0' location";
+    carp "unable to determine script '$0' location";
 }
 
 sub guess_script_name {
@@ -98,7 +98,8 @@ sub guess_script_name {
 sub guess_script_dir {
     my $class=shift;
     my $script=$class->guess_full_script_name;
-    File::Spec->catfile((File::Spec->splitpath($script, 0))[0,1]);
+    my ($unit, $dir)=File::Spec->splitpath($script, 0);
+    File::Spec->catdir($unit, $dir);
 }
 
 sub is_one_liner { return $0 eq '-e' }
@@ -161,6 +162,12 @@ sub my_catfile {
     File::Spec->catfile(@_);
 }
 
+sub my_catdir {
+    my $class=shift;
+    pop @_ unless defined $_[-1];
+    File::Spec->catdir(@_);
+}
+
 sub my_getlogin {
     my $login=getlogin();
     $login = '_UNKNOW_' unless defined $login;
@@ -168,8 +175,8 @@ sub my_getlogin {
 }
 
 1;
+
 __END__
-# Below is stub documentation for your module. You'd better edit it!
 
 =head1 NAME
 

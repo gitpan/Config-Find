@@ -4,6 +4,7 @@ lib/Config/Find.pm
 lib/Config/Find/Unix.pm
 lib/Config/Find/Where.pm
 lib/Config/Find/Win2k.pm
+lib/Config/Find/Win2k3.pm
 lib/Config/Find/Win95.pm
 lib/Config/Find/Win98.pm
 lib/Config/Find/WinAny.pm

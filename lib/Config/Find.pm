@@ -2,7 +2,7 @@ package Config::Find;
 
 use 5.006;
 
-our $VERSION = '0.13';
+our $VERSION = '0.15';
 
 use strict;
 use warnings;
@@ -16,15 +16,15 @@ BEGIN {
 	require Win32;
 	my $OS=uc Win32::GetOSName();
 	
-	if ($OS eq 'WIN95') {
+	if ($OS=~/^WIN95/) {
 	    require Config::Find::Win95;
 	    @ISA=qw(Config::Find::Win95);
 	}
-	elsif ($OS eq 'WIN98') {
+	elsif ($OS=~/^WIN98/) {
 	    require Config::Find::Win98;
 	    @ISA=qw(Config::Find::Win98);
 	}
-	elsif ($OS eq 'WINME') {
+	elsif ($OS=~/^WINME/) {
 	    require Config::Find::WinME;
 	    @ISA=qw(Config::Find::WinME);
 	}
@@ -32,11 +32,11 @@ BEGIN {
 	    require Config::Find::WinNT;
 	    @ISA=qw(Config::Find::WinNT);
 	}
-	elsif ($OS eq 'WIN2000') {
+	elsif ($OS=~/^WIN2000/) {
 	    require Config::Find::Win2k;
 	    @ISA=qw(Config::Find::Win2k);
 	}
-	elsif ($OS eq 'WIN2003') {
+	elsif ($OS=~/^WIN2003/) {
 	    require Config::Find::Win2k3;
 	    @ISA=qw(Config::Find::Win2k3);
 	}
@@ -44,7 +44,7 @@ BEGIN {
 	    require Config::Find::WinXP;
 	    @ISA=qw(Config::Find::WinXP);
 	}
-	elsif ($OS eq 'WINCE') {
+	elsif ($OS=~/^WINCE/) {
 	    require Config::Find::WinCE;
 	    @ISA=qw(Config::Find::WinCE);
 	}
@@ -91,7 +91,7 @@ sub parse_opts {
 	@names=$opts{name};
     }
     elsif (exists $opts{names}) {
-	UNIVERSAL->isa($opts{names}, 'ARRAY')
+	UNIVERSAL::isa($opts{names}, 'ARRAY')
 	    or croak "invalid argument for 'names', expecting an array ref";
 	@names=@{$opts{names}}
     }

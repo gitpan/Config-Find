@@ -1,5 +1,15 @@
 Revision history for Perl extension Config::Find.
 
+0.15  11 Feb 2004
+	- Corrected bug on "names" handling reported by Bart Schaefer
+	- Better handling of Win32::GetFolderPath returning invalid
+	  results
+
+0.14  15 Jan 2004
+	- Win2k3.pm missing from MANIFEST
+	- Use regexps to match Win OSs
+	- corrected bug on guess_script_dir
+
 0.13  13 Jan 2004
 	- NT4 was not being recognised as NT (bug reported by
           Philip Grivell).
