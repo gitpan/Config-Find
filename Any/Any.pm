@@ -2,7 +2,7 @@ package Config::Find::Any;
 
 use 5.006;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use strict;
 use warnings;
@@ -15,7 +15,11 @@ use IO::File;
 
 sub find {
     my $class=shift;
-    $class->_find($class->parse_opts(@_))
+    my ($write, $global, $fn, @names)=$class->parse_opts(@_);
+    if (defined $fn) {
+      return ($write or -f $fn) ? $fn : undef;
+    }
+    $class->_find($write, $global, @names);
 }
 
 sub _find {
@@ -35,8 +39,8 @@ sub _find {
 
 sub open {
     my $class=shift;
-    my ($write, $global, @names)=$class->parse_opts(@_);
-    my $fn=$class->_find($write, $global, @names);
+    my ($write, $global, $fn, @names)=$class->parse_opts(@_);
+    defined($fn) or $fn=$class->_find($write, $global, @names);
     $class->_open($write, $global, $fn);
 }
 
@@ -52,9 +56,9 @@ sub _open {
 sub install {
     my $class=shift;
     my $orig=shift;
-    my ($write, $global, @names)=$class->parse_opts( mode => 'w',
-						     @_ );
-    my $fn=$class->_find($write, $global, @names);
+    my ($write, $global, $fn, @names)=$class->parse_opts( mode => 'w',
+							  @_);
+    defined($fn) or $fn=$class->_find($write, $global, @names);
     $class->_install($orig, $write, $global, $fn);
 }
 
@@ -75,6 +79,7 @@ sub _install {
 
 sub parse_opts {
     my ($class, %opts)=@_;
+    my $fn=$opts{file};
     my @names;
     if (exists $opts{name}) {
 	@names=$opts{name};
@@ -111,7 +116,7 @@ sub parse_opts {
 	    croak "invalid option mode => '$opts{scope}'";
 	}
     }
-    return ($write, $global, @names)
+    return ($write, $global, $fn, @names)
 }
 
 sub guess_full_script_name {
@@ -135,7 +140,7 @@ sub guess_script_name {
 sub guess_script_dir {
     my $class=shift;
     my $script=$class->guess_full_script_name;
-    File::Spec->catfile((File::Spec->splitpath($script))[0,1]);
+    File::Spec->catfile((File::Spec->splitpath($script, 0))[0,1]);
 }
 
 sub add_extension {
@@ -163,7 +168,7 @@ sub create_parent_dirs {
 sub parent_dir {
     my ($class, $dir)=@_;
     my @dirs=File::Spec->splitdir($dir);
-    pop @dirs;
+    pop(@dirs) eq '' and pop(@dirs);
     File::Spec->catfile(@dirs);
 }
 

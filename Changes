@@ -1,5 +1,12 @@
 Revision history for Perl extension Config::Find.
 
+0.02  Wed Apr 9 2003
+	- corrected bug in 'parent_dir' that was not correctly
+	  handling trailing '/'
+	- corrected bug in 'guess_script_dir' that was not removing
+	  the script name
+	- support for 'file' option added
+	- dependencies added in Makefile.PL
 
 0.01  Mon Mar 31 13:09:40 2003
 	- original version; created by h2xs 1.22 with options

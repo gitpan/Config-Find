@@ -1,4 +1,4 @@
-Config/Find version 0.01
+Config/Find version 0.02
 ========================
 
 Config::Find implements a set of heuristics to find the
@@ -21,6 +21,8 @@ DEPENDENCIES
 This module requires these other modules and libraries:
 
     File::HomeDir
+    File::Which
+    File::Spec
     Test::More
 
 

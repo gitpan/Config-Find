@@ -2,7 +2,7 @@ package Config::Find;
 
 use 5.006;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use strict;
 use warnings;
@@ -46,9 +46,11 @@ Config::Find - Find configuration files in the native OS fashion
                              mode => 'w' )
 
 
-  my $fn=Config::Find->install('original/config/file.conf',
-                               name => 'foo');
+  my $fn=Config::Find->install( 'original/config/file.conf',
+                                name => 'foo' );
 
+  my $fn=Config::Find->find( file => $opt_c,
+                             name => foo );
 
 =head1 ABSTRACT
 
@@ -82,6 +84,28 @@ picks the first configuration file matching any of the names passed.
 
 =back
 
+Alternatively, the exact position for the file can be specified with
+the C<file> keyword:
+
+=over 4
+
+=item file => C</config/file/name.conf>
+
+explicit position of the configuration file.
+
+If undef is passed this entry is ignored and the search for the
+configuration file continues with the apropiate OS rules. This allows
+for:
+
+  use Config::Find;
+  use Getopt::Std;
+
+  our $opt_c;
+  getopts('c:');
+
+  my $fn=Config::Find->find(file => $opt_c)
+
+=back
 
 Methods in this package also accept the optional arguments C<scope>
 and C<mode>:
