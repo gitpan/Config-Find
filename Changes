@@ -1,7 +1,16 @@
 Revision history for Perl extension Config::Find.
 
+0.09  5 Jun 2003
+	- new file layout, now all the .pm files are under a common
+	  lib dir.
+	- new Config::Find::Where module with some utility methods
+	  (maybe unrelated to Config::Find, but useful anyway).
+	- Win32.pm module deleted.
+	- added supoprt for Windows 2003
+	- corrected some errors in the docs
+
 0.08  29 May 2003
-	- look for script on current dir when it hasn't the path
+	- look for script on current dir when it doesn't have the path
 	  included in its name and it has not been found on the system
 	  path.
 
@@ -33,4 +42,5 @@ Revision history for Perl extension Config::Find.
 0.01  Mon Mar 31 13:09:40 2003
 	- original version; created by h2xs 1.22 with options
 		-AX -n Config::Find
+
 

@@ -2,10 +2,12 @@ package Config::Find::Unix;
 
 use 5.006;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use strict;
 use warnings;
+
+use Carp;
 
 use File::HomeDir;
 use Config::Find::Any;
@@ -13,13 +15,50 @@ use Config::Find::Any;
 our @ISA=qw(Config::Find::Any);
 
 sub app_dir {
-    my $class=shift;
-    my $script=$class->guess_script_name;
-    if (exists $ENV{$script.'_HOME'}) {
-	return $ENV{$script.'_HOME'}
+    my ($class, $name)=@_;
+    $name=$class->guess_script_name
+	unless defined $name;
+
+    if (exists $ENV{$name.'_HOME'}) {
+	return $ENV{$name.'_HOME'}
     }
     $class->parent_dir($class->guess_script_dir);
 }
+
+sub system_temp { '/tmp' }
+
+sub _var_dir {
+    my ($class, $name, $more_name, $scope)=@_;
+    if ($scope eq 'global') {
+	$class->my_catfile('/var', $name, $more_name);
+    }
+    elsif ($scope eq 'user') {
+	File::Spec->catfile(home(), 'var', $name, $more_name);
+    }
+    elsif ($scope eq 'app') {
+	$class->my_catfile($class->app_dir($name), $more_name);
+    }
+    else {
+	croak "scope '$scope' is not valid for var_dir method";
+    }
+}
+
+sub _bin_dir {
+    my ($class, $name, $more_name, $scope)=@_;
+    if ($scope eq 'global') {
+	'/usr/bin';
+    }
+    elsif ($scope eq 'user') {
+	File::Spec->catfile(home(), 'bin');
+    }
+    elsif ($scope eq 'app') {
+	File::Spec->catfile($class->app_dir($name), 'bin');
+    }
+    else {
+	croak "scope '$scope' is not valid for bin_dir method";
+    }
+}
+
 
 sub look_for_file {
     my ($class, $name, $write, $global)=@_;
@@ -29,10 +68,10 @@ sub look_for_file {
 	    my $fnwe=$class->add_extension($name, 'conf');
 
 	    unless ($class->is_one_liner) {
-		my $etc=File::Spec->catfile($class->app_dir(), 'etc');
+		my $etc=File::Spec->catfile($class->app_dir($name), 'etc');
 		return File::Spec->catfile($etc, $fnwe) if -e $etc;
 
-		$etc=File::Spec->catfile($class->app_dir(), 'conf');
+		$etc=File::Spec->catfile($class->app_dir($name), 'conf');
 		return File::Spec->catfile($etc, $fnwe) if -e $etc;
 	    }
 
@@ -54,11 +93,11 @@ sub look_for_file {
 	my $fnwe=$class->add_extension($name, 'conf');
 	unless ($class->is_one_liner) {
 	    # looks in ./../etc/whatever.conf relative to the running script
-	    $fn=File::Spec->catfile($class->app_dir(), 'etc', $fnwe);
+	    $fn=File::Spec->catfile($class->app_dir($name), 'etc', $fnwe);
 	    return $fn if -f $fn;
 
 	    # looks in ./../conf/whatever.conf relative to the running script
-	    $fn=File::Spec->catfile($class->app_dir(), 'conf', $fnwe);
+	    $fn=File::Spec->catfile($class->app_dir($name), 'conf', $fnwe);
 	    return $fn if -f $fn;
 	}
 
@@ -77,10 +116,10 @@ sub look_for_dir_file {
     if ($write) {
 	if ($global) {
 	    unless ($class->is_one_liner) {
-		my $etc=File::Spec->catfile($class->app_dir(), 'etc');
+		my $etc=File::Spec->catfile($class->app_dir($name), 'etc');
 		return File::Spec->catfile($etc, $dir, $fnwe) if -e $etc;
 
-		$etc=File::Spec->catfile($class->app_dir(), 'conf');
+		$etc=File::Spec->catfile($class->app_dir($name), 'conf');
 		return File::Spec->catfile($etc, $dir, $fnwe) if -e $etc;
 	    }
 
@@ -100,11 +139,11 @@ sub look_for_dir_file {
 
 	unless ($class->is_one_liner) {
 	    # looks in ./../etc/whatever.conf relative to the running script
-	    $fn=File::Spec->catfile($class->app_dir(), 'etc', $dir, $fnwe);
+	    $fn=File::Spec->catfile($class->app_dir($name), 'etc', $dir, $fnwe);
 	    return $fn if -f $fn;
 
 	    # looks in ./../conf/whatever.conf relative to the running script
-	    $fn=File::Spec->catfile($class->app_dir(), 'conf', $dir, $fnwe);
+	    $fn=File::Spec->catfile($class->app_dir($name), 'conf', $dir, $fnwe);
 	    return $fn if -f $fn;
 	}
 

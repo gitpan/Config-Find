@@ -2,7 +2,7 @@ package Config::Find::Any;
 
 use 5.006;
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 use strict;
 use warnings;
@@ -12,15 +12,6 @@ use File::Spec;
 use File::Which;
 use IO::File;
 
-
-sub find {
-    my $class=shift;
-    my ($write, $global, $fn, @names)=$class->parse_opts(@_);
-    if (defined $fn) {
-      return ($write or -f $fn) ? $fn : undef;
-    }
-    $class->_find($write, $global, @names);
-}
 
 sub _find {
     my ($class, $write, $global, @names)=@_;
@@ -38,13 +29,6 @@ sub _find {
     return undef;
 }
 
-sub open {
-    my $class=shift;
-    my ($write, $global, $fn, @names)=$class->parse_opts(@_);
-    defined($fn) or $fn=$class->_find($write, $global, @names);
-    $class->_open($write, $global, $fn);
-}
-
 sub _open {
     my ($class, $write, $global, $fn)=@_;
     if ($write) {
@@ -52,15 +36,6 @@ sub _open {
 	return IO::File->new($fn, 'w');
     }
     defined($fn) ? IO::File->new($fn, 'r') : undef;
-}
-
-sub install {
-    my $class=shift;
-    my $orig=shift;
-    my ($write, $global, $fn, @names)=$class->parse_opts( mode => 'w',
-							  @_);
-    defined($fn) or $fn=$class->_find($write, $global, @names);
-    $class->_install($orig, $write, $global, $fn);
 }
 
 sub _install {
@@ -78,46 +53,26 @@ sub _install {
     return $fn;
 }
 
-sub parse_opts {
-    my ($class, %opts)=@_;
-    my $fn=$opts{file};
-    my @names;
-    if (exists $opts{name}) {
-	@names=$opts{name};
+sub _temp_dir {
+    my ($class, $name, $more_name, $scope)=@_;
+
+    my $stemp=$class->system_temp;
+
+    if ($scope eq 'global') {
+	$class->my_catfile($stemp, $name, $more_name)
     }
-    elsif (exists $opts{names}) {
-	UNIVERSAL->isa($opts{names}, 'ARRAY')
-	    or croak "invalid argument for 'names', expecting an array ref";
-	@names=@{$opts{names}}
+    elsif ($scope eq 'user') {
+	$class->my_catfile($stemp, $class->my_getlogin, $name, $more_name)
+    }
+    elsif ($scope eq 'app') {
+	$class->my_catfile($class->app_dir($name), 'tmp', $more_name)
+    }
+    elsif ($scope eq 'process') {
+	$class->my_catfile($stemp, $class->my_getlogin, $name, $$, $more_name)
     }
     else {
-	@names=$class->guess_script_name();
+	croak "scope '$scope' is not valid for temp_dir method";
     }
-    my $write;
-    if (exists $opts{mode}) {
-	if ($opts{mode}=~/^r(ead)?$/i) {
-	    # yes, do nothing!
-	}
-	elsif ($opts{mode}=~/w(rite)?$/i) {
-	    $write=1;
-	}
-	else {
-	    croak "invalid option mode => '$opts{mode}'";
-	}
-    }
-    my $global;
-    if (exists $opts{scope}) {
-	if ($opts{scope}=~/^u(ser)?$/i) {
-	    # yes, do nothing!
-	}
-	elsif ($opts{scope}=~/g(lobal)?$/i) {
-	    $global=1;
-	}
-	else {
-	    croak "invalid option mode => '$opts{scope}'";
-	}
-    }
-    return ($write, $global, $fn, @names)
 }
 
 sub guess_full_script_name {
@@ -177,6 +132,19 @@ sub parent_dir {
     File::Spec->catfile(@dirs);
 }
 
+sub create_dir {
+    my ($class, $dir)=@_;
+    if (-e $dir) {
+	-d $dir or croak "'$dir' exists but is not a directory";
+    }
+    else {
+	$class->create_parent_dirs($dir);
+	mkdir $dir or
+	    die "unable to create directory '$dir' ($!)";
+    }
+    $dir;
+}
+
 sub look_for_file {
     my $class=shift;
     die "unimplemented virtual method $class->look_for_file() called";
@@ -185,6 +153,18 @@ sub look_for_file {
 sub look_for_dir_file {
     my $class=shift;
     die "unimplemented virtual method $class->look_for_dir_file() called";
+}
+
+sub my_catfile {
+    my $class=shift;
+    pop @_ unless defined $_[-1];
+    File::Spec->catfile(@_);
+}
+
+sub my_getlogin {
+    my $login=getlogin();
+    $login = '_UNKNOW_' unless defined $login;
+    $login;
 }
 
 1;

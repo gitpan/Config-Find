@@ -1,14 +1,14 @@
 use 5.006;
+
 use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
+
 WriteMakefile(
     'NAME'		=> 'Config::Find',
-    'VERSION_FROM'	=> 'Find.pm', # finds $VERSION
+    'VERSION_FROM'	=> 'lib/Config/Find.pm',
     'PREREQ_PM'		=> {'File::Which' => 0,
 			    'File::Spec' => 0,
 			    'File::HomeDir' => 0 },
-    ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM => 'Find.pm', # retrieve abstract from module
+    ($] >= 5.005 ?
+      (ABSTRACT_FROM => 'lib/Config/Find.pm',
        AUTHOR     => 'Salvador Fandiño <sfandino@yahoo.com>') : ()),
 );

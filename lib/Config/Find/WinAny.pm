@@ -1,17 +1,22 @@
 package Config::Find::WinAny;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use strict;
 use warnings;
+
+use Carp;
 
 use Config::Find::Any;
 
 our @ISA = qw(Config::Find::Any);
 
 sub app_dir {
-    my $class=shift;
-    my $script=$class->guess_script_name;
+    my ($class, $name)=@_;
+
+    my $name=$class->guess_script_name
+	unless defined $name;
+
     if (exists $ENV{$script.'_HOME'}) {
 	return $ENV{$script.'_HOME'}
     }
@@ -19,12 +24,40 @@ sub app_dir {
 }
 
 sub app_user_dir {
-    my $class=shift;
-    my $login=getlogin();
-    return File::Spec->catfile($class->app_dir,
+    my ($class, $name)=@_;
+    return File::Spec->catfile($class->app_dir($name),
 			       'Users',
-			       ( defined($login) ?
-				 $login : '_UNKNOW_' ));
+			       $class->my_getlogin);
+}
+
+sub system_temp {
+    my $class=shift;
+
+    return $ENV{TEMP}
+	if defined $ENV{TEMP};
+
+    return $ENV{TMP}
+	if defined $ENV{TMP};
+
+    return File::Spec->catfile($ENV{windir}, 'Temp')
+	if defined $ENV{windir};
+
+    return 'C:\Temp';
+}
+
+sub _var_dir {
+    my ($class, $name, $more_name, $scope)=@_;
+    if ($scope eq 'user') {
+	File::Spec->catfile($class->app_user_dir($name), $name, 'Data', $more_name)
+    }
+    else {
+	File::Spec->catfile($class->app_dir($name), 'Data', $more_name);
+    }
+}
+
+sub _bin_dir {
+    my ($class, $name, $more_name, $scope)=@_;
+    $class->app_dir($name);
 }
 
 sub look_for_file {
@@ -33,11 +66,11 @@ sub look_for_file {
     my $fnwe=$class->add_extension($name, 'cfg');
     if ($write) {
 	if ($global) {
-	    return File::Spec->catfile($class->app_dir, $fnwe)
+	    return File::Spec->catfile($class->app_dir($name), $fnwe)
 	}
 	else {
-	    my $login=getlogin();
-	    return File::Spec->catfile($class->app_user_dir,
+	    # my $login=getlogin();
+	    return File::Spec->catfile($class->app_user_dir($name),
 				       $fnwe );
 	}
     }
@@ -46,7 +79,7 @@ sub look_for_file {
 	    $fn=File::Spec->catfile($class->app_user_dir, $fnwe );
 	    return $fn if -f $fn;
 	}
-	$fn=File::Spec->catfile($class->app_dir(), $fnwe);
+	$fn=File::Spec->catfile($class->app_dir($name), $fnwe);
 	return $fn if -f $fn;
     }
     return undef;
@@ -58,21 +91,21 @@ sub look_for_dir_file {
     my $fnwe=$class->add_extension($name, 'cfg');
     if ($write) {
 	if ($global) {
-	    return File::Spec->catfile($class->app_dir, $dir, $fnwe)
+	    return File::Spec->catfile($class->app_dir($name), $dir, $fnwe)
 	}
 	else {
-	    my $login=getlogin();
-	    return File::Spec->catfile($class->app_user_dir,
+	    # my $login=getlogin();
+	    return File::Spec->catfile($class->app_user_dir($name),
 				       $dir, $fnwe );
 	}
     }
     else {
 	unless ($global) {
-	    $fn=File::Spec->catfile($class->app_user_dir,
+	    $fn=File::Spec->catfile($class->app_user_dir($name),
 				    $dir, $fnwe );
 	    return $fn if -f $fn;
 	}
-	$fn=File::Spec->catfile($class->app_dir(),
+	$fn=File::Spec->catfile($class->app_dir($name),
 				$dir, $fnwe);
 	return $fn if -f $fn;
     }
@@ -99,24 +132,25 @@ Implements features common to all the Win32 OS's
 
 This module implements Config::Find for Win32 OS's.
 
-Order for config files searching is:
+Order for config files searching is...
 
   1  /$path_to_script/Users/$user/$name.cfg    [user]
   2  /$path_to_script/$name.cfg                [global]
 
-unless $ENV{${name}_HOME} is defined, then the order is:
+unless when C<$ENV{${name}_HOME}> is defined. That changes the search
+paths to...
 
   1  $ENV{${name}_HOME}/Users/$user/$name.cfg  [user]
   2  $ENV{${name}_HOME}/$name.cfg              [global]
 
 
 When the "several configuration files in one directory" aproach is
-used, the order is something different:
+used, the order is something different...
 
   1  /$path_to_script/Users/$user/$dir/$name.cfg  [user]
   2  /$path_to_script/$dir/$name.cfg              [global]
 
-(also affected by C<$ENV{${name}_HOME}>)
+(it is also affected by C<$ENV{${name}_HOME}> variable)
 
 
 =head2 EXPORT
