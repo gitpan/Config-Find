@@ -1,6 +1,6 @@
 package Config::Find::Win32;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use strict;
 use warnings;
@@ -32,7 +32,7 @@ BEGIN {
 	require Config::Find::Win2k;
 	@ISA=qw(Config::Find::Win2k);
     }
-    elsif ($OS eq 'WINXP') {
+    elsif ($OS eq 'WINXP' or $OS eq 'WINXP/.NET') {
 	require Config::Find::WinXP;
 	@ISA=qw(Config::Find::WinXP);
     }
