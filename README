@@ -1,5 +1,5 @@
-Config/Find version 0.07
-========================
+Config/Find version
+===================
 
 Config::Find implements a set of heuristics to find the
 configuration files for your applications in an OS dependant

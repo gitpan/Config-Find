@@ -1,5 +1,10 @@
 Revision history for Perl extension Config::Find.
 
+0.08  29 May 2003
+	- look for script on current dir when it hasn't the path
+	  included in its name and it has not been found on the system
+	  path.
+
 0.07  29 Apr 2003
 	- Accept "WinXP/.NET" as OS
 

@@ -2,7 +2,7 @@ package Config::Find::Any;
 
 use 5.006;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 use strict;
 use warnings;
@@ -123,11 +123,13 @@ sub parse_opts {
 sub guess_full_script_name {
     my $path = (File::Spec->splitpath($0))[1];
     if ($path eq '') {
-        my $script=File::Which::which($0)
-            or die "unable to determine script '$0' location";
-        return File::Spec->rel2abs($script);
+        if (my $script=File::Which::which($0)) {
+	    return File::Spec->rel2abs($script);
+	}
     }
-    return File::Spec->rel2abs($0);
+    return File::Spec->rel2abs($0) if -e $0;
+
+    die "unable to determine script '$0' location";
 }
 
 sub guess_script_name {
