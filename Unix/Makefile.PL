@@ -5,7 +5,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     'NAME'		=> 'Config::Find::Unix',
     'VERSION_FROM'	=> 'Unix.pm', # finds $VERSION
-    'PREREQ_PM'		=> {}, # e.g., Module::Name => 1.1
+    'PREREQ_PM'		=> { 'File::HomeDir' => 0 },
     ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM => 'Unix.pm', # retrieve abstract from module
        AUTHOR     => 'Salvador Fandiño <sfandino@yahoo.com>') : ()),

@@ -1,10 +1,13 @@
 Revision history for Perl extension Config::Find.
 
+0.04  Thu Apr 10 2003
+	- added File::HomeDir dependecy to Config::Find::Unix
+
 0.03  Wed Apr 9 2003
 	- corrected bug in open that returned a valid file handler
 	  even when the configuration file was not found
 
- 0.02 Wed Apr 9	2003
+0.02  Wed Apr 9 2003
 	- corrected bug in 'parent_dir' that was not correctly
 	  handling trailing '/'
 	- corrected bug in 'guess_script_dir' that was not removing
