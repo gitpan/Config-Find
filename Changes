@@ -1,5 +1,8 @@
 Revision history for Perl extension Config::Find.
 
+0.05  Mon Apr 14 2003
+	- support for one liners added to Unix module
+
 0.04  Thu Apr 10 2003
 	- added File::HomeDir dependecy to Config::Find::Unix
 

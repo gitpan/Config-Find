@@ -2,7 +2,7 @@ package Config::Find::Unix;
 
 use 5.006;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use strict;
 use warnings;
@@ -28,11 +28,13 @@ sub look_for_file {
 	if ($global) {
 	    my $fnwe=$class->add_extension($name, 'conf');
 
-	    my $etc=File::Spec->catfile($class->app_dir(), 'etc');
-	    return File::Spec->catfile($etc, $fnwe) if -e $etc;
+	    unless ($class->is_one_liner) {
+		my $etc=File::Spec->catfile($class->app_dir(), 'etc');
+		return File::Spec->catfile($etc, $fnwe) if -e $etc;
 
-	    $etc=File::Spec->catfile($class->app_dir(), 'conf');
-	    return File::Spec->catfile($etc, $fnwe) if -e $etc;
+		$etc=File::Spec->catfile($class->app_dir(), 'conf');
+		return File::Spec->catfile($etc, $fnwe) if -e $etc;
+	    }
 
 	    return File::Spec->catfile('/etc', $fnwe);
 	}
@@ -48,14 +50,17 @@ sub look_for_file {
 	    $fn=File::Spec->catfile(home(), ".$name");
 	    return $fn if -f $fn;
 	}
-	# looks in ./../etc/whatever.conf relative to the running script
-	my $fnwe=$class->add_extension($name, 'conf');
-	$fn=File::Spec->catfile($class->app_dir(), 'etc', $fnwe);
-	return $fn if -f $fn;
 
-	# looks in ./../conf/whatever.conf relative to the running script
-	$fn=File::Spec->catfile($class->app_dir(), 'conf', $fnwe);
-	return $fn if -f $fn;
+	my $fnwe=$class->add_extension($name, 'conf');
+	unless ($class->is_one_liner) {
+	    # looks in ./../etc/whatever.conf relative to the running script
+	    $fn=File::Spec->catfile($class->app_dir(), 'etc', $fnwe);
+	    return $fn if -f $fn;
+
+	    # looks in ./../conf/whatever.conf relative to the running script
+	    $fn=File::Spec->catfile($class->app_dir(), 'conf', $fnwe);
+	    return $fn if -f $fn;
+	}
 
 	# looks in /etc/whatever.conf
 	$fn=File::Spec->catfile('/etc', $fnwe);
@@ -71,11 +76,13 @@ sub look_for_dir_file {
     my $fnwe=$class->add_extension($name, 'conf');
     if ($write) {
 	if ($global) {
-	    my $etc=File::Spec->catfile($class->app_dir(), 'etc');
-	    return File::Spec->catfile($etc, $dir, $fnwe) if -e $etc;
+	    unless ($class->is_one_liner) {
+		my $etc=File::Spec->catfile($class->app_dir(), 'etc');
+		return File::Spec->catfile($etc, $dir, $fnwe) if -e $etc;
 
-	    $etc=File::Spec->catfile($class->app_dir(), 'conf');
-	    return File::Spec->catfile($etc, $dir, $fnwe) if -e $etc;
+		$etc=File::Spec->catfile($class->app_dir(), 'conf');
+		return File::Spec->catfile($etc, $dir, $fnwe) if -e $etc;
+	    }
 
 	    return File::Spec->catfile('/etc', $dir, $fnwe);
 
@@ -91,13 +98,15 @@ sub look_for_dir_file {
 	    return $fn if -f $fn;
 	}
 
-	# looks in ./../etc/whatever.conf relative to the running script
-	$fn=File::Spec->catfile($class->app_dir(), 'etc', $dir, $fnwe);
-	return $fn if -f $fn;
+	unless ($class->is_one_liner) {
+	    # looks in ./../etc/whatever.conf relative to the running script
+	    $fn=File::Spec->catfile($class->app_dir(), 'etc', $dir, $fnwe);
+	    return $fn if -f $fn;
 
-	# looks in ./../conf/whatever.conf relative to the running script
-	$fn=File::Spec->catfile($class->app_dir(), 'conf', $dir, $fnwe);
-	return $fn if -f $fn;
+	    # looks in ./../conf/whatever.conf relative to the running script
+	    $fn=File::Spec->catfile($class->app_dir(), 'conf', $dir, $fnwe);
+	    return $fn if -f $fn;
+	}
 
 	# looks in system /etc/whatever.conf
 	$fn=File::Spec->catfile('/etc', $dir, $fnwe);

@@ -2,7 +2,7 @@ package Config::Find::Any;
 
 use 5.006;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use strict;
 use warnings;
@@ -143,6 +143,8 @@ sub guess_script_dir {
     my $script=$class->guess_full_script_name;
     File::Spec->catfile((File::Spec->splitpath($script, 0))[0,1]);
 }
+
+sub is_one_liner { return $0 eq '-e' }
 
 sub add_extension {
     my ($class, $name, $ext)=@_;
