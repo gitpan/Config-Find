@@ -65,6 +65,21 @@ sub _bin_dir {
     }
 }
 
+sub look_for_helper {
+
+    my ($class, $dir, $helper)=@_;
+
+    my @ext=('', ( defined $ENV{PATHEXT}
+		   ? (split /;/, $ENV{PATHEXT})
+		   : qw(.COM .EXE .BAT .CMD)));
+
+    for my $ext (@ext) {
+	my $path=File::Spec->catfile($dir, $helper.$ext);
+	-e $path and -x $path and return $path;
+    }
+    croak "helper '$helper' not found";
+}
+
 sub look_for_file {
     my ($class, $name, $write, $global)=@_;
     my $fn;

@@ -2,7 +2,7 @@ package Config::Find::Unix;
 
 use 5.006;
 
-our $VERSION = '0.04';
+our $VERSION = '0.06';
 
 use strict;
 use warnings;
@@ -29,11 +29,12 @@ sub system_temp { '/tmp' }
 
 sub _var_dir {
     my ($class, $name, $more_name, $scope)=@_;
+
     if ($scope eq 'global') {
 	$class->my_catfile('/var', $name, $more_name);
     }
     elsif ($scope eq 'user') {
-	File::Spec->catfile(home(), 'var', $name, $more_name);
+	File::Spec->catfile(home(), '.'.$name, 'var', $more_name);
     }
     elsif ($scope eq 'app') {
 	$class->my_catfile($class->app_dir($name), $more_name);
@@ -90,30 +91,40 @@ sub look_for_file {
 	    return $fn if -f $fn;
 	}
 
-	my $fnwe=$class->add_extension($name, 'conf');
-	unless ($class->is_one_liner) {
-	    # looks in ./../etc/whatever.conf relative to the running script
-	    $fn=File::Spec->catfile($class->app_dir($name), 'etc', $fnwe);
-	    return $fn if -f $fn;
-
-	    # looks in ./../conf/whatever.conf relative to the running script
-	    $fn=File::Spec->catfile($class->app_dir($name), 'conf', $fnwe);
+	for my $fnwe (map {$class->add_extension($name, $_)}
+		      qw(conf cfg)) {
+	    unless ($class->is_one_liner) {
+		# looks in ./../etc/whatever.conf relative to the running script
+		$fn=File::Spec->catfile($class->app_dir($name), 'etc', $fnwe);
+		return $fn if -f $fn;
+		
+		# looks in ./../conf/whatever.conf relative to the running script
+		$fn=File::Spec->catfile($class->app_dir($name), 'conf', $fnwe);
+		return $fn if -f $fn;
+	    }
+	    # looks in /etc/whatever.conf
+	    $fn=File::Spec->catfile('/etc', $fnwe);
 	    return $fn if -f $fn;
 	}
-
-	# looks in /etc/whatever.conf
-	$fn=File::Spec->catfile('/etc', $fnwe);
-	return $fn if -f $fn;
-
     }
     return undef;
+}
+
+sub look_for_helper {
+    my ($class, $dir, $helper)=@_;
+    my $path=File::Spec->catfile($dir, $helper);
+    -e $path or
+	croak "helper '$helper' not found";
+    ((-f $path or -l $path) and -x $path)  or
+	croak "helper '$helper' found at '$path' but it is not executable";
+    return $path
 }
 
 sub look_for_dir_file {
     my ($class, $dir, $name, $write, $global)=@_;
     my $fn;
-    my $fnwe=$class->add_extension($name, 'conf');
     if ($write) {
+	my $fnwe=$class->add_extension($name, 'conf');
 	if ($global) {
 	    unless ($class->is_one_liner) {
 		my $etc=File::Spec->catfile($class->app_dir($name), 'etc');
@@ -132,25 +143,28 @@ sub look_for_dir_file {
     }
     else {
 	# looks in ~/.whatever
-	unless ($global) {
-	    my $fn=File::Spec->catfile(home(), ".$dir", $fnwe);
+	for my $fnwe (map {$class->add_extension($name, $_)}
+		      qw(conf cfg)) {
+
+	    unless ($global) {
+		my $fn=File::Spec->catfile(home(), ".$dir", $fnwe);
+		return $fn if -f $fn;
+	    }
+
+	    unless ($class->is_one_liner) {
+		# looks in ./../etc/whatever.conf relative to the running script
+		$fn=File::Spec->catfile($class->app_dir($name), 'etc', $dir, $fnwe);
+		return $fn if -f $fn;
+
+		# looks in ./../conf/whatever.conf relative to the running script
+		$fn=File::Spec->catfile($class->app_dir($name), 'conf', $dir, $fnwe);
+		return $fn if -f $fn;
+	    }
+	
+	    # looks in system /etc/whatever.conf
+	    $fn=File::Spec->catfile('/etc', $dir, $fnwe);
 	    return $fn if -f $fn;
 	}
-
-	unless ($class->is_one_liner) {
-	    # looks in ./../etc/whatever.conf relative to the running script
-	    $fn=File::Spec->catfile($class->app_dir($name), 'etc', $dir, $fnwe);
-	    return $fn if -f $fn;
-
-	    # looks in ./../conf/whatever.conf relative to the running script
-	    $fn=File::Spec->catfile($class->app_dir($name), 'conf', $dir, $fnwe);
-	    return $fn if -f $fn;
-	}
-
-	# looks in system /etc/whatever.conf
-	$fn=File::Spec->catfile('/etc', $dir, $fnwe);
-	return $fn if -f $fn;
-
     }
     return undef;
 }

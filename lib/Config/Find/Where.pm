@@ -1,6 +1,6 @@
 package Config::Find::Where;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 use strict;
 use warnings;
@@ -32,7 +32,7 @@ sub bin_dir {
     my ($name, $more_name, $create, $scope)=
 	$class->parse_opts(scope=> 'app', @_);
 
-    $class->create_dir_if($class->_bin_dir($name, $more_name, $scope), $create)
+    $class->create_dir_if($class->_bin_dir($name, $more_name, $scope), $create);
 }
 
 sub application_dir {
@@ -42,7 +42,6 @@ sub application_dir {
 
     $class->create_dir_if($class->app_dir($name), $create)
 }
-
 
 sub create_dir_if {
     my ($class, $dir, $create)=@_;
@@ -56,6 +55,13 @@ sub create_dir_if {
 sub script_full_path { shift->guess_full_script_name }
 
 sub script_name { shift->guess_script_name }
+
+sub helper_path {
+    my $class=shift;
+    my $helper=shift;
+    my $path=$class->bin_dir(@_);
+    $class->look_for_helper($path, $helper);
+}
 
 sub parse_opts {
     my ($class, %opts)=@_;

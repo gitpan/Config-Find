@@ -1,5 +1,12 @@
 Revision history for Perl extension Config::Find.
 
+0.12  30 Sep 2003
+	- Unix module accepts .cfg extension for read mode
+
+0.11  12 Jun 2003
+	- improved Config::Find::Where->var_dir(scope=>user) on Unix.
+	- new Config::Find::Where->helper_path method
+
 0.10  12 Jun 2003
 	- corrected several bugs in Windows modules
 	- new test script 2_where.t
