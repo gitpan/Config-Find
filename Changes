@@ -1,5 +1,9 @@
 Revision history for Perl extension Config::Find.
 
+0.06  Tue Apr 15 2003
+	- File::HomeDir dependency added to main module, CPANPLUS
+ 	  doesn't catch it on the inner module
+
 0.05  Mon Apr 14 2003
 	- support for one liners added to Unix module
 

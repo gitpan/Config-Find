@@ -6,7 +6,8 @@ WriteMakefile(
     'NAME'		=> 'Config::Find',
     'VERSION_FROM'	=> 'Find.pm', # finds $VERSION
     'PREREQ_PM'		=> {'File::Which' => 0,
-			    'File::Spec' => 0 }, # e.g., Module::Name => 1.1
+			    'File::Spec' => 0,
+			    'File::HomeDir' => 0 },
     ($] >= 5.005 ?    ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM => 'Find.pm', # retrieve abstract from module
        AUTHOR     => 'Salvador Fandiño <sfandino@yahoo.com>') : ()),
