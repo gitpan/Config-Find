@@ -17,3 +17,4 @@ README
 t/1.t
 t/2_where.t
 
+META.yml                                 Module meta-data (added by MakeMaker)

@@ -2,7 +2,7 @@ package Config::Find;
 
 use 5.006;
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 use strict;
 use warnings;
@@ -28,7 +28,7 @@ BEGIN {
 	    require Config::Find::WinME;
 	    @ISA=qw(Config::Find::WinME);
 	}
-	elsif ($OS eq 'WINNT') {
+	elsif ($OS=~/^WINNT/) {
 	    require Config::Find::WinNT;
 	    @ISA=qw(Config::Find::WinNT);
 	}
@@ -40,7 +40,7 @@ BEGIN {
 	    require Config::Find::Win2k3;
 	    @ISA=qw(Config::Find::Win2k3);
 	}
-	elsif ($OS eq 'WINXP' or $OS eq 'WINXP/.NET') {
+	elsif ($OS=~/^WINXP/) {
 	    require Config::Find::WinXP;
 	    @ISA=qw(Config::Find::WinXP);
 	}
@@ -285,7 +285,7 @@ Salvador Fandiño García, E<lt>sfandino@yahoo.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2003 by Salvador Fandiño García
+Copyright 2003, 2004 by Salvador Fandiño García
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

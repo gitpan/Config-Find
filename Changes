@@ -1,5 +1,9 @@
 Revision history for Perl extension Config::Find.
 
+0.13  13 Jan 2004
+	- NT4 was not being recognised as NT (bug reported by
+          Philip Grivell).
+
 0.12  30 Sep 2003
 	- Unix module accepts .cfg extension for read mode
 
