@@ -1,5 +1,9 @@
 Revision history for Perl extension Config::Find.
 
+0.16  16 Sep 2004
+	- create_dir function exported on Config::Find::Where
+	- support for 'dir' option on Where module functions.
+
 0.15  11 Feb 2004
 	- Corrected bug on "names" handling reported by Bart Schaefer
 	- Better handling of Win32::GetFolderPath returning invalid

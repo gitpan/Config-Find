@@ -117,7 +117,7 @@ sub create_parent_dirs {
 	-d $parent or
 	    croak "'$parent' exists but is not a directory";
 	-W $parent or
-	    croak "not allowed to write in directory '$parent'";
+	    croak "not allowed to write on directory '$parent'";
     }
     else {
 	$class->create_parent_dirs($parent);

@@ -1,6 +1,6 @@
 package Config::Find::Where;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use strict;
 use warnings;
@@ -13,34 +13,46 @@ our @ISA=@Config::Find::ISA;
 
 sub temp_dir {
     my $class=shift;
-    my ($name, $more_name, $create, $scope)=
+    my ($name, $more_name, $create, $dn, $scope)=
 	$class->parse_opts(scope=> 'user', @_);
 
-    $class->create_dir_if($class->_temp_dir($name, $more_name, $scope), $create)
+    $class->create_dir_if( (defined $dn
+			    ? $dn
+			    : $class->_temp_dir($name, $more_name, $scope)),
+			   $create)
 }
 
 sub var_dir {
     my $class=shift;
-    my ($name, $more_name, $create, $scope)=
+    my ($name, $more_name, $create, $dn, $scope)=
 	$class->parse_opts(scope => 'app', @_);
 
-    $class->create_dir_if($class->_var_dir($name, $more_name, $scope), $create)
+    $class->create_dir_if( (defined $dn
+			    ? $dn
+			    : $class->_var_dir($name, $more_name, $scope) ),
+			   $create)
 }
 
 sub bin_dir {
     my $class=shift;
-    my ($name, $more_name, $create, $scope)=
+    my ($name, $more_name, $create, $dn, $scope)=
 	$class->parse_opts(scope=> 'app', @_);
 
-    $class->create_dir_if($class->_bin_dir($name, $more_name, $scope), $create);
+    $class->create_dir_if( (defined $dn
+			    ? $dn
+			    : $class->_bin_dir($name, $more_name, $scope) ),
+			   $create);
 }
 
 sub application_dir {
     my $class=shift;
-    my ($name, $more_name, $create, $scope)=
+    my ($name, $more_name, $create, $dn, $scope)=
 	$class->parse_opts(@_);
 
-    $class->create_dir_if($class->app_dir($name), $create)
+    $class->create_dir_if( (defined $dn
+			    ? $dn
+			    : $class->app_dir($name) ),
+			   $create)
 }
 
 sub create_dir_if {
@@ -65,8 +77,8 @@ sub helper_path {
 
 sub parse_opts {
     my ($class, %opts)=@_;
-    my ($name, $more_name, $create, $scope);
-
+    my ($name, $more_name, $create, $dn, $scope);
+    $dn=$opts{dir};
     $create=$opts{create};
 
     if (defined $opts{name}) {
@@ -100,7 +112,7 @@ sub parse_opts {
 	$scope='global';
     }
 
-    return ($name, $more_name, $create, $scope);
+    return ($name, $more_name, $create, $dn, $scope);
 }
 
 =head1 NAME
@@ -202,6 +214,10 @@ returns the name of the running script without any path information
 =item $path=Config::Find::Where-E<gt>script_full_path()
 
 returns the name of the script as the absolute full path to it.
+
+=item $Config::Find::Where-E<gt>create_dir($dir)
+
+creates directory C<$dir> and any needed parents
 
 =back
 
