@@ -1,6 +1,6 @@
 package Config::Find::Where;
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 use strict;
 use warnings;
@@ -207,6 +207,13 @@ returns the path to the directory where the running script is located.
 The default scope for this method is C<app>.
 
 
+=item $path=Config::Find::Where-E<gt>var_dir(%opts)
+
+returns a place to find/place working files.
+
+The default scope for this method is C<app>.
+
+
 =item $name=Config::Find::Where-E<gt>script_name()
 
 returns the name of the running script without any path information
@@ -243,11 +250,11 @@ L<Config::Find>
 
 =head1 AUTHOR
 
-Salvador Fandiño García, E<lt>sfandino@yahoo.comE<gt>
+Salvador FandiE<ntilde>o García, E<lt>sfandino@yahoo.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2003 by Salvador Fandiño García
+Copyright 2003-2005 by Salvador FandiE<ntilde>o García
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

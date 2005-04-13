@@ -2,7 +2,7 @@ package Config::Find;
 
 use 5.006;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 use strict;
 use warnings;
@@ -281,11 +281,11 @@ L<Config::Auto> inspired this module.
 
 =head1 AUTHOR
 
-Salvador Fandiño García, E<lt>sfandino@yahoo.comE<gt>
+Salvador FandiE<ntilde>o García, E<lt>sfandino@yahoo.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2003, 2004 by Salvador Fandiño García
+Copyright 2003-2005 by Salvador FandiE<ntilde>o García
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

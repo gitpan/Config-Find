@@ -2,7 +2,7 @@ package Config::Find::Unix;
 
 use 5.006;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use strict;
 use warnings;
@@ -37,7 +37,7 @@ sub _var_dir {
 	File::Spec->catfile(home(), '.'.$name, 'var', $more_name);
     }
     elsif ($scope eq 'app') {
-	$class->my_catfile($class->app_dir($name), $more_name);
+	$class->my_catfile($class->app_dir($name), 'var', $more_name);
     }
     else {
 	croak "scope '$scope' is not valid for var_dir method";

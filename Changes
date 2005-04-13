@@ -1,5 +1,10 @@
 Revision history for Perl extension Config::Find.
 
+0.17  13 Apr 2005
+	- bug on var_dir corrected, when using scope 'app' a 'var'
+	  part was missing on the path.
+	- Config::Find::Where::var_dir documented
+
 0.16  16 Sep 2004
 	- create_dir function exported on Config::Find::Where
 	- support for 'dir' option on Where module functions.
