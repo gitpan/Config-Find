@@ -2,7 +2,7 @@ package Config::Find::Any;
 
 use 5.006;
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 use strict;
 use warnings;
@@ -32,7 +32,7 @@ sub _find {
 sub _open {
     my ($class, $write, $global, $fn)=@_;
     if ($write) {
-	$class->create_parent_dirs($fn);
+	$class->create_parent_dir($fn);
 	return IO::File->new($fn, 'w');
     }
     defined($fn) ? IO::File->new($fn, 'r') : undef;
@@ -110,7 +110,7 @@ sub add_extension {
     return $name.'.'.$ext;
 }
 
-sub create_parent_dirs {
+sub create_parent_dir {
     my ($class, $fn)=@_;
     my $parent=$class->parent_dir($fn);
     if (-e $parent) {
@@ -120,7 +120,7 @@ sub create_parent_dirs {
 	    croak "not allowed to write on directory '$parent'";
     }
     else {
-	$class->create_parent_dirs($parent);
+	$class->create_parent_dir($parent);
 	mkdir $parent or
 	    die "unable to create directory '$parent' ($!)";
     }
@@ -128,9 +128,10 @@ sub create_parent_dirs {
 
 sub parent_dir {
     my ($class, $dir)=@_;
+    # print "creating dir $dir\n";
     my @dirs=File::Spec->splitdir($dir);
     pop(@dirs) eq '' and pop(@dirs);
-    File::Spec->catfile(@dirs);
+    File::Spec->catfile(@dirs ? @dirs : File::Spec->rootdir);
 }
 
 sub create_dir {
@@ -139,7 +140,7 @@ sub create_dir {
 	-d $dir or croak "'$dir' exists but is not a directory";
     }
     else {
-	$class->create_parent_dirs($dir);
+	$class->create_parent_dir($dir);
 	mkdir $dir or
 	    die "unable to create directory '$dir' ($!)";
     }
@@ -214,11 +215,11 @@ L<Config::Find>, L<Config::Find::Unix>, L<Config::Find::Win32>.
 
 =head1 AUTHOR
 
-Salvador Fandiño, E<lt>sfandino@yahoo.comE<gt>
+Salvador FandiE<ntilde>o, E<lt>sfandino@yahoo.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2003 by Salvador Fandiño
+Copyright 2003-2005 by Salvador FandiE<ntilde>o
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

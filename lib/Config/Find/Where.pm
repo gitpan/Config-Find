@@ -1,6 +1,6 @@
 package Config::Find::Where;
 
-our $VERSION = '0.04';
+our $VERSION = '0.06';
 
 use strict;
 use warnings;
@@ -62,6 +62,16 @@ sub create_dir_if {
 	$class->create_dir($dir);
     }
     $dir;
+}
+
+sub create_dir {
+    my ($class, $dir)=@_;
+    $class->SUPER::create_dir(File::Spec->rel2abs($dir));
+}
+
+sub create_parent_dir {
+    my ($class, $dir)=@_;
+    $class->SUPER::create_parent_dir(File::Spec->rel2abs($dir));
 }
 
 sub script_full_path { shift->guess_full_script_name }
@@ -222,11 +232,15 @@ returns the name of the running script without any path information
 
 returns the name of the script as the absolute full path to it.
 
-=item $Config::Find::Where-E<gt>create_dir($dir)
+=item Config::Find::Where-E<gt>create_dir($dir)
 
 creates directory C<$dir> and any needed parents
 
 =back
+
+=item Config::Find::Where-E<gt>create_parent_dir($file)
+
+recursively creates all the non existant parent dirs for C<$file>.
 
 =head2 EXPORT
 

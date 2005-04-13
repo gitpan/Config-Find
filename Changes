@@ -1,5 +1,11 @@
 Revision history for Perl extension Config::Find.
 
+0.18  13 Apr 2005
+	- bug on parent_dir('') going to an inf. loop corrected.
+	- convert path to absolute on create_dir and create_parent_dir
+	- create_parent_dirs renamed to create_parent_dir and exported
+	  via Config::Find::Where.
+
 0.17  13 Apr 2005
 	- bug on var_dir corrected, when using scope 'app' a 'var'
 	  part was missing on the path.
