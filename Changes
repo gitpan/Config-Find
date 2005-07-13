@@ -1,5 +1,9 @@
 Revision history for Perl extension Config::Find.
 
+0.19  13 Jul 2005
+	- bug on look_for_dir_file passing the wrong app name to
+	  app_dir.
+
 0.18  13 Apr 2005
 	- bug on parent_dir('') going to an inf. loop corrected.
 	- convert path to absolute on create_dir and create_parent_dir

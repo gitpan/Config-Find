@@ -2,7 +2,7 @@ package Config::Find;
 
 use 5.006;
 
-our $VERSION = '0.18';
+our $VERSION = '0.19';
 
 use strict;
 use warnings;

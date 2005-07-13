@@ -1,6 +1,6 @@
 package Config::Find::WinAny;
 
-our $VERSION = '0.16';
+our $VERSION = '0.17';
 
 use strict;
 use warnings;
@@ -19,8 +19,9 @@ sub app_dir {
     $name=$class->guess_script_name
 	unless defined $name;
 
-    if (exists $ENV{$name.'_HOME'}) {
-	return $ENV{$name.'_HOME'}
+    my $ename = uc($name).'_HOME';
+    if (exists $ENV{$ename}) {
+	return $ENV{$ename}
     }
     $class->guess_script_dir;
 }
@@ -118,11 +119,11 @@ sub look_for_dir_file {
     my $fnwe=$class->add_extension($name, 'cfg');
     if ($write) {
 	if ($global) {
-	    return File::Spec->catfile($class->app_dir($name), $dir, $fnwe)
+	    return File::Spec->catfile($class->app_dir($dir), $dir, $fnwe)
 	}
 	else {
 	    # my $login=getlogin();
-	    return File::Spec->catfile($class->app_user_dir($name),
+	    return File::Spec->catfile($class->app_user_dir($dir),
 				       $dir, $fnwe );
 	}
     }

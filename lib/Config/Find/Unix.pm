@@ -2,7 +2,7 @@ package Config::Find::Unix;
 
 use 5.006;
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 use strict;
 use warnings;
@@ -19,8 +19,9 @@ sub app_dir {
     $name=$class->guess_script_name
 	unless defined $name;
 
-    if (exists $ENV{$name.'_HOME'}) {
-	return $ENV{$name.'_HOME'}
+    my $ename = uc($name).'_HOME';
+    if (exists $ENV{$ename}) {
+	return $ENV{$ename}
     }
     $class->parent_dir($class->guess_script_dir);
 }
@@ -127,10 +128,10 @@ sub look_for_dir_file {
 	my $fnwe=$class->add_extension($name, 'conf');
 	if ($global) {
 	    unless ($class->is_one_liner) {
-		my $etc=File::Spec->catfile($class->app_dir($name), 'etc');
+		my $etc=File::Spec->catfile($class->app_dir($dir), 'etc');
 		return File::Spec->catfile($etc, $dir, $fnwe) if -e $etc;
 
-		$etc=File::Spec->catfile($class->app_dir($name), 'conf');
+		$etc=File::Spec->catfile($class->app_dir($dir), 'conf');
 		return File::Spec->catfile($etc, $dir, $fnwe) if -e $etc;
 	    }
 
@@ -151,13 +152,13 @@ sub look_for_dir_file {
 		return $fn if -f $fn;
 	    }
 
-	    unless ($class->is_one_liner) {
+	    unless ($class->is_one_liner and not defined $dir) {
 		# looks in ./../etc/whatever.conf relative to the running script
-		$fn=File::Spec->catfile($class->app_dir($name), 'etc', $dir, $fnwe);
+		$fn=File::Spec->catfile($class->app_dir($dir), 'etc', $dir, $fnwe);
 		return $fn if -f $fn;
 
 		# looks in ./../conf/whatever.conf relative to the running script
-		$fn=File::Spec->catfile($class->app_dir($name), 'conf', $dir, $fnwe);
+		$fn=File::Spec->catfile($class->app_dir($dir), 'conf', $dir, $fnwe);
 		return $fn if -f $fn;
 	    }
 	
