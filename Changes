@@ -1,5 +1,8 @@
 Revision history for Perl extension Config::Find.
 
+0.20  27 Jul 2005
+	- look for ~/.foo.conf and ~/.foo.cfg in addition to ~/.foo
+
 0.19  13 Jul 2005
 	- bug on look_for_dir_file passing the wrong app name to
 	  app_dir.

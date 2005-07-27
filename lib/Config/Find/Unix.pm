@@ -2,7 +2,7 @@ package Config::Find::Unix;
 
 use 5.006;
 
-our $VERSION = '0.08';
+our $VERSION = '0.09';
 
 use strict;
 use warnings;
@@ -90,6 +90,9 @@ sub look_for_file {
 	unless ($global) {
 	    $fn=File::Spec->catfile(home(), ".$name");
 	    return $fn if -f $fn;
+	    for my $ext (qw(conf cfg)) {
+		return "$fn.$ext" if -f "$fn.$ext";
+	    }
 	}
 
 	for my $fnwe (map {$class->add_extension($name, $_)}
@@ -196,6 +199,7 @@ This module implements Config::Find for Unix
 The order for searching the config files is:
 
   1  ~/.$name                             [user]
+  1b ~/.$name.conf                        [user]
   2  /$path_to_script/../etc/$name.conf   [global]
   3  /$path_to_script/../conf/$name.conf  [global]
   4  /etc/$name.conf                      [global]
@@ -204,6 +208,7 @@ although if the environment variable C<$ENV{${name}_HOME}> is defined
 it does
 
   1  ~/.$name                             [user]
+  1b ~/.$name.conf                        [user]
   2  $ENV{${name}_HOME}/etc/$name.conf    [global]
   3  $ENV{${name}_HOME}/conf/$name.conf   [global]
   4  /etc/$name.conf                      [global]
@@ -212,7 +217,7 @@ instead.
 
 
 When the "several configuration files in one directory" aproach is
-used, the order is something different:
+used, the order is somewhat different:
 
   1  ~/.$dir/$name.conf                        [user]
   2  /$path_to_script/../etc/$dir/$name.conf   [global]
