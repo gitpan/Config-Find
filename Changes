@@ -1,5 +1,9 @@
 Revision history for Perl extension Config::Find.
 
+0.21  8 Aug 2005
+	- added work around on WinAny module when ${APPDATA} or
+	  ${LOCAL_APPDATA} point to the user desktop to ignore them.
+
 0.20  27 Jul 2005
 	- look for ~/.foo.conf and ~/.foo.cfg in addition to ~/.foo
 

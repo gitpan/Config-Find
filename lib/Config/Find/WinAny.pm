@@ -1,6 +1,6 @@
 package Config::Find::WinAny;
 
-our $VERSION = '0.17';
+our $VERSION = '0.18';
 
 use strict;
 use warnings;
@@ -9,7 +9,8 @@ use Carp;
 
 use Config::Find::Any;
 use Win32 qw(CSIDL_LOCAL_APPDATA
-	     CSIDL_APPDATA);
+	     CSIDL_APPDATA
+	     CSIDL_DESKTOPDIRECTORY);
 
 our @ISA = qw(Config::Find::Any);
 
@@ -28,6 +29,13 @@ sub app_dir {
 
 my $winlocalappdir=Win32::GetFolderPath(CSIDL_LOCAL_APPDATA);
 my $winappdir=Win32::GetFolderPath(CSIDL_APPDATA);
+
+my $windesktop=Win32::GetFolderPath(CSIDL_DESKTOPDIRECTORY);
+
+if (defined $windesktop and $windesktop ne '') {
+    undef $winlocalappdir if (defined($winlocalappdir) and index($winlocalappdir, $windesktop) == 0);
+    undef $winappdir if (defined($winappdir) and index($winappdir, $windesktop) == 0);
+}
 
 sub app_user_dir {
     my ($class, $name)=@_;
@@ -193,7 +201,12 @@ configuration data under ${LOCAL_APPDATA} as returned by
 C<Win32::GetFolderPath(CSIDL_LOCAL_APPDATA)> (if this call fails, the
 old approach is used).  Also, global configuration files were stored
 under a new directory placed in the same dir as the script but this is
-unnecesary because windows apps already go in its own directory.
+unnecesary because windows apps already go in their own directory.
+
+It seems that, sometimes, ${LOCAL_APPDATA} points to the user desktop
+and placing configuration files there would be obviusly wrong. As a
+work around, the module will ignore ${LOCAL_APPDATA} or ${APPDATA} if
+they point to any place below the desktop path.
 
 =head2 EXPORT
 
