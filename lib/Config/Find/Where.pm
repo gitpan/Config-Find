@@ -1,6 +1,6 @@
 package Config::Find::Where;
 
-our $VERSION = '0.06';
+our $VERSION = '0.22';
 
 use strict;
 use warnings;
@@ -236,11 +236,12 @@ returns the name of the script as the absolute full path to it.
 
 creates directory C<$dir> and any needed parents
 
-=back
-
 =item Config::Find::Where-E<gt>create_parent_dir($file)
 
 recursively creates all the non existant parent dirs for C<$file>.
+
+=back
+
 
 =head2 EXPORT
 

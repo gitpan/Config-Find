@@ -1,5 +1,9 @@
 Revision history for Perl extension Config::Find.
 
+0.22  22 Sep 2005
+	- pod errors corrected on Config::Find::Where and now using
+	  Test::Pod for automatically finding those errors.
+
 0.21  8 Aug 2005
 	- added work around on WinAny module when ${APPDATA} or
 	  ${LOCAL_APPDATA} point to the user desktop to ignore them.

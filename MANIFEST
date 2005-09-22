@@ -17,5 +17,5 @@ MANIFEST
 README
 t/1.t
 t/2_where.t
-
+t/3_pods.t
 META.yml                                 Module meta-data (added by MakeMaker)
