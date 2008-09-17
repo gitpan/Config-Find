@@ -2,7 +2,7 @@ package Config::Find::Unix;
 
 use 5.006;
 
-our $VERSION = '0.09';
+our $VERSION = '0.23';
 
 use strict;
 use warnings;
@@ -11,6 +11,8 @@ use Carp;
 
 use File::HomeDir;
 use Config::Find::Any;
+
+
 
 our @ISA=qw(Config::Find::Any);
 
@@ -26,16 +28,25 @@ sub app_dir {
     $class->parent_dir($class->guess_script_dir);
 }
 
+sub _my_home {
+    my $home = File::HomeDir->my_home;
+    return $home if defined $home;
+    my ($user, $dir) = (getpwuid $>)[0, 7];
+    return $dir if defined $dir;
+    return "/home/$user" if defined $user;
+    return "/"
+};
+
 sub system_temp { '/tmp' }
 
 sub _var_dir {
-    my ($class, $name, $more_name, $scope)=@_;
+    my ($class, $name, $more_name, $scope) = @_;
 
     if ($scope eq 'global') {
 	$class->my_catfile('/var', $name, $more_name);
     }
     elsif ($scope eq 'user') {
-	File::Spec->catfile(home(), '.'.$name, 'var', $more_name);
+	File::Spec->catfile(_my_home(), '.'.$name, 'var', $more_name);
     }
     elsif ($scope eq 'app') {
 	$class->my_catfile($class->app_dir($name), 'var', $more_name);
@@ -46,12 +57,12 @@ sub _var_dir {
 }
 
 sub _bin_dir {
-    my ($class, $name, $more_name, $scope)=@_;
+    my ($class, $name, $more_name, $scope) = @_;
     if ($scope eq 'global') {
 	'/usr/bin';
     }
     elsif ($scope eq 'user') {
-	File::Spec->catfile(home(), 'bin');
+	File::Spec->catfile(_my_home(), 'bin');
     }
     elsif ($scope eq 'app') {
 	File::Spec->catfile($class->app_dir($name), 'bin');
@@ -61,6 +72,21 @@ sub _bin_dir {
     }
 }
 
+sub _lib_dir {
+    my ($class, $name, $more_name, $scope) = @_;
+    if ($scope eq 'global') {
+	'/usr/lib';
+    }
+    elsif ($scope eq 'user') {
+	File::Spec->catfile(_my_home(), 'lib');
+    }
+    elsif ($scope eq 'app') {
+	File::Spec->catfile($class->app_dir($name), 'lib');
+    }
+    else {
+	croak "scope '$scope' is not valid for lib_dir method";
+    }
+}
 
 sub look_for_file {
     my ($class, $name, $write, $global)=@_;
@@ -80,7 +106,7 @@ sub look_for_file {
 	    return File::Spec->catfile('/etc', $fnwe);
 	}
 	else {
-	    return File::Spec->catfile(home(), ".$name");
+	    return File::Spec->catfile(_my_home(), ".$name");
 	}
 
     }
@@ -88,7 +114,7 @@ sub look_for_file {
 
 	# looks in ~/.whatever
 	unless ($global) {
-	    $fn=File::Spec->catfile(home(), ".$name");
+	    $fn=File::Spec->catfile(_my_home(), ".$name");
 	    return $fn if -f $fn;
 	    for my $ext (qw(conf cfg)) {
 		return "$fn.$ext" if -f "$fn.$ext";
@@ -142,7 +168,7 @@ sub look_for_dir_file {
 
 	}
 	else {
-	    return File::Spec->catfile(home(), ".$dir", $fnwe);
+	    return File::Spec->catfile(_my_home(), ".$dir", $fnwe);
 	}
     }
     else {
@@ -151,7 +177,7 @@ sub look_for_dir_file {
 		      qw(conf cfg)) {
 
 	    unless ($global) {
-		my $fn=File::Spec->catfile(home(), ".$dir", $fnwe);
+		my $fn=File::Spec->catfile(_my_home(), ".$dir", $fnwe);
 		return $fn if -f $fn;
 	    }
 

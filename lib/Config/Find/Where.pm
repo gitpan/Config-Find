@@ -1,6 +1,6 @@
 package Config::Find::Where;
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 use strict;
 use warnings;
@@ -12,7 +12,7 @@ our @ISA=@Config::Find::ISA;
 
 
 sub temp_dir {
-    my $class=shift;
+    my $class = shift;
     my ($name, $more_name, $create, $dn, $scope)=
 	$class->parse_opts(scope=> 'user', @_);
 
@@ -23,7 +23,7 @@ sub temp_dir {
 }
 
 sub var_dir {
-    my $class=shift;
+    my $class = shift;
     my ($name, $more_name, $create, $dn, $scope)=
 	$class->parse_opts(scope => 'app', @_);
 
@@ -34,7 +34,7 @@ sub var_dir {
 }
 
 sub bin_dir {
-    my $class=shift;
+    my $class = shift;
     my ($name, $more_name, $create, $dn, $scope)=
 	$class->parse_opts(scope=> 'app', @_);
 
@@ -42,6 +42,17 @@ sub bin_dir {
 			    ? $dn
 			    : $class->_bin_dir($name, $more_name, $scope) ),
 			   $create);
+}
+
+sub lib_dir {
+    my $class = shift;
+    my ($name, $more_name, $create, $dn, $scope) =
+        $class->parse_opts(scope => 'app', @_);
+
+    $class->create_dir_if( (defined $dn
+                            ? $dn
+                            : $class->_lib_dir($name, $more_name, $scope) ),
+                           $create);
 }
 
 sub application_dir {
@@ -223,6 +234,19 @@ returns a place to find/place working files.
 
 The default scope for this method is C<app>.
 
+=item $path = Config::Find::Where-E<gt>lib_dir(%opts)
+
+returns a place to find/place library files.
+
+The default scope for this method is C<app>.
+
+For instance:
+
+  use lib => Config::Find::Where->lib_dir;
+
+=item $path = Config::Find::Where-E<gt>application_dir(%opts)
+
+returns the application root directory.
 
 =item $name=Config::Find::Where-E<gt>script_name()
 
