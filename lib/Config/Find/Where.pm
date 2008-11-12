@@ -1,6 +1,6 @@
 package Config::Find::Where;
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 use strict;
 use warnings;
@@ -88,6 +88,8 @@ sub create_parent_dir {
 sub script_full_path { shift->guess_full_script_name }
 
 sub script_name { shift->guess_script_name }
+
+sub script_dir { shift->guess_script_dir }
 
 sub helper_path {
     my $class=shift;
@@ -217,16 +219,18 @@ The default scope for this method is C<user>.
 
 =item $path=Config::Find::Where-E<gt>bin_dir(%opts)
 
-returns a place to find/place binary files.
+returns a place to find/place binary files. The default scope for this
+method is C<app>.
 
 i.e.
 
- Config::Find->bin_dir()
+ Config::Find::Where->bin_dir()
 
-returns the path to the directory where the running script is located.
+returns the path to the directory where binaries are located.
 
-The default scope for this method is C<app>.
-
+Note that this directory is not necessarily the same as the one
+containing the running script. See documentation for C<script_dir>
+below.
 
 =item $path=Config::Find::Where-E<gt>var_dir(%opts)
 
@@ -256,6 +260,10 @@ returns the name of the running script without any path information
 
 returns the name of the script as the absolute full path to it.
 
+=item $path=Config::Find::Where-E<gt>script_dir()
+
+returns the name of the directory containing the current script
+
 =item Config::Find::Where-E<gt>create_dir($dir)
 
 creates directory C<$dir> and any needed parents
@@ -271,6 +279,7 @@ recursively creates all the non existant parent dirs for C<$file>.
 
 None, this module has an OO interface.
 
+
 =head1 BUGS
 
 Some Win32 OSs are not completely implemented and default to inferior
@@ -280,20 +289,15 @@ Contributions, bug reports, feedback and any kind of comments are
 welcome.
 
 
-
-
 =head1 SEE ALSO
 
 L<Config::Find>
 
 
-=head1 AUTHOR
-
-Salvador FandiE<ntilde>o García, E<lt>sfandino@yahoo.comE<gt>
-
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2003-2005 by Salvador FandiE<ntilde>o García
+Copyright 2003-2008 by Salvador FandiE<ntilde>o GarcE<iacute>a
+(sfandino@yahoo.com)
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.

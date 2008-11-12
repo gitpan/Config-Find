@@ -1,5 +1,9 @@
 Revision history for Perl extension Config::Find.
 
+0.24  12 Nov, 2008
+        - add Config::Find::Where->script_dir()
+        - some minor doc improvements
+
 0.23  17 Sep, 2008
         - add Config::Find::Where->lib_dir method
         - Config::Find::Where->application_dir documented

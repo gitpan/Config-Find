@@ -2,7 +2,7 @@ package Config::Find;
 
 use 5.006;
 
-our $VERSION = '0.23';
+our $VERSION = '0.24';
 
 use strict;
 use warnings;
@@ -265,9 +265,6 @@ modes, but hey, this is a work in progress!!!
 Contributions, bug reports, feedback and any kind of comments are
 welcome.
 
-
-
-
 =head1 SEE ALSO
 
 L<Config::Find::Unix>, L<Config::Find::Win32> for descriptions of the
@@ -276,16 +273,12 @@ heuristics used to find the configuration files.
 L<Config::Find::Any> for information about adding support for a new
 OS.
 
-L<Config::Auto> inspired this module.
-
-
-=head1 AUTHOR
-
-Salvador FandiE<ntilde>o García, E<lt>sfandino@yahoo.comE<gt>
+L<Config::Auto> give me the idea for this module.
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2003-2005 by Salvador FandiE<ntilde>o García
+Copyright 2003-2008 by Salvador FandiE<ntilde>o GarcE<iacute>a
+(sfandino@yahoo.com)
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
