@@ -1,10 +1,10 @@
 --- #YAML:1.0
 name:                Config-Find
-version:             0.24
-abstract:            Find configuration files in the native OS fashion
+version:             0.25
+abstract:            ~
 license:             ~
 author:              
-    - Salvador Fandiño <sfandino@yahoo.com>
+    - Salvador Fandino <sfandino@yahoo.com>
 generated_by:        ExtUtils::MakeMaker version 6.42
 distribution_type:   module
 requires:     

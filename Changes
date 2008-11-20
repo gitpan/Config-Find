@@ -1,5 +1,9 @@
 Revision history for Perl extension Config::Find.
 
+0.25  20 Nov, 2008
+        - paths began with '//' on cygwin, use catpath to undo
+          splitpath (bug report from Pablo Torres).
+
 0.24  12 Nov, 2008
         - add Config::Find::Where->script_dir()
         - some minor doc improvements
