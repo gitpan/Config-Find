@@ -1,6 +1,6 @@
 package Config::Find::Any;
 
-our $VERSION = '0.25';
+our $VERSION = '0.26';
 
 use strict;
 use warnings;
@@ -97,7 +97,7 @@ sub guess_script_dir {
     my $class=shift;
     my $script=$class->guess_full_script_name;
     my ($unit, $dir)=File::Spec->splitpath($script, 0);
-    File::Spec->catpath($unit, $dir);
+    File::Spec->catpath($unit, $dir, '');
 }
 
 sub is_one_liner { return $0 eq '-e' }

@@ -1,6 +1,9 @@
 Revision history for Perl extension Config::Find.
 
-0.25  20 Nov, 2008
+0.26  Nov 24, 2008
+        - remove warning from File::Spec
+
+0.25  Nov 20, 2008
         - paths began with '//' on cygwin, use catpath to undo
           splitpath (bug report from Pablo Torres).
 
